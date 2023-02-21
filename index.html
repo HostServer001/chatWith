@@ -15,7 +15,7 @@
     <button id="send-button">Send</button>
 
     <script>
-      const socket = new WebSocket('ws://localhost:8080');
+      const socket = new WebSocket('https://192.168.43.86:9999');
 
       socket.addEventListener('open', (event) => {
         console.log('WebSocket connection opened');
