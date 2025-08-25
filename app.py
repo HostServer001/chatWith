@@ -28,8 +28,11 @@ def handle_chat(data):
     msg = data['msg']
     output = f"{nickname}: {msg}"
     send(output, broadcast=True)
+    file = open("chat.txt","r")
+    old = file.read()
+    file.close()
     file = open("chat.txt","w")
-    file.write(output)
+    file.write(f"{old}\n{output}")
     file.close()
     logging.info(output)
 
