@@ -1,6 +1,6 @@
-import os
-from flask import Flask
+from flask import Flask, render_template
 from flask_socketio import SocketIO, send
+import os
 import eventlet
 eventlet.monkey_patch()
 
@@ -8,8 +8,8 @@ app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 @app.route('/')
-def home():
-    return "Chat server is running!"
+def index():
+    return render_template('index.html')
 
 @socketio.on('message')
 def handle_message(msg):
@@ -17,5 +17,5 @@ def handle_message(msg):
     send(msg, broadcast=True)
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 10000))  # Render provides PORT
+    port = int(os.environ.get("PORT", 10000))
     socketio.run(app, host='0.0.0.0', port=port)
