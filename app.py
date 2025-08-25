@@ -26,9 +26,21 @@ def handle_message(msg):
 # Handle user joining
 @socketio.on('join')
 def handle_join(nickname):
+    logging.info(f"{nickname} joined the chat")
+    
+    # Broadcast join message to everyone
     join_msg = f"{nickname} has entered the chat"
-    logging.info(join_msg)
     emit('message', join_msg, broadcast=True)
+    
+    # Read previous chat history
+    file_path = os.path.join(app.root_path, "chat.txt")
+    if os.path.exists(file_path):
+        with open(file_path, "r", encoding="utf-8") as file:
+            history = file.readlines()
+        
+        # Send chat history only to the joining user
+        for line in history:
+            emit('message', line.strip())
 
 # Handle chat messages
 @socketio.on('chat_message')
