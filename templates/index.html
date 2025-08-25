@@ -1,108 +1,168 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Chat App</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chat App - Solarized Dark</title>
   <style>
-  body {
-    font-family: "Courier New", Courier, monospace;
-    background-color: black;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-  }
+    /* Solarized Dark Palette */
+    :root {
+      --base03: #002b36;
+      --base02: #073642;
+      --base01: #586e75;
+      --base00: #657b83;
+      --base0:  #839496;
+      --base1:  #93a1a1;
+      --base2:  #eee8d5;
+      --base3:  #fdf6e3;
+      --yellow: #b58900;
+      --orange: #cb4b16;
+      --red:    #dc322f;
+      --magenta:#d33682;
+      --violet: #6c71c4;
+      --blue:   #268bd2;
+      --cyan:   #2aa198;
+      --green:  #859900;
+    }
 
-  h1 {
-    color: #333;
-    margin-bottom: 20px;
-  }
+    body {
+      font-family: 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--base03);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      color: var(--base0);
+    }
 
-  #chat {
-    width: 400px;
-    height: 300px;
-    background-color: #ffffff;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 10px;
-    overflow-y: auto;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 15px;
-  }
+    h1 {
+      color: var(--cyan);
+      margin: 20px 0;
+      font-size: 1.8rem;
+      text-align: center;
+    }
 
-  #chat p {
-    margin: 5px 0;
-    padding: 6px 10px;
-    background-color: #e1f5fe;
-    border-radius: 6px;
-    word-wrap: break-word;
-  }
-
-  #message {
-    width: 300px;
-    padding: 10px;
-    border: 1px solid #aaa;
-    border-radius: 6px;
-    font-size: 14px;
-    margin-right: 10px;
-  }
-
-  button {
-    padding: 10px 16px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-
-  button:hover {
-    background-color: #0056b3;
-  }
-
-  @media (max-width: 500px) {
     #chat {
-      width: 90%;
+      width: 100%;
+      max-width: 500px;
+      height: 320px;
+      background-color: var(--base02);
+      border: 1px solid var(--base01);
+      border-radius: 12px;
+      padding: 12px;
+      overflow-y: auto;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      margin-bottom: 15px;
+      scroll-behavior: smooth;
+    }
+
+    #chat p {
+      margin: 8px 0;
+      padding: 8px 12px;
+      background-color: var(--base01);
+      color: var(--base2);
+      border-radius: 8px;
+      word-wrap: break-word;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .input-container {
+      display: flex;
+      width: 100%;
+      max-width: 500px;
+      gap: 10px;
+      padding: 0 5px;
     }
 
     #message {
-      width: 60%;
+      flex: 1;
+      padding: 10px;
+      border: 1px solid var(--base01);
+      border-radius: 8px;
+      font-size: 14px;
+      background-color: var(--base02);
+      color: var(--base0);
+      transition: border-color 0.3s ease;
     }
-  }
-</style>
 
+    #message:focus {
+      outline: none;
+      border-color: var(--cyan);
+    }
+
+    button {
+      padding: 10px 16px;
+      background-color: var(--blue);
+      color: var(--base3);
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.1s ease;
+    }
+
+    button:hover {
+      background-color: var(--cyan);
+    }
+
+    button:active {
+      transform: scale(0.96);
+    }
+
+    @media (max-width: 600px) {
+      #chat {
+        height: 250px;
+        padding: 10px;
+      }
+      #message {
+        font-size: 13px;
+      }
+      button {
+        font-size: 13px;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(5px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+  </style>
   <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 </head>
 <body>
   <h1>Welcome to the Chat App</h1>
+
   <div id="chat"></div>
-  <input id="message" placeholder="Type a message..." />
-  <button onclick="sendMessage()">Send</button>
 
-<script>
-  let nickname = prompt("Enter your nickname:");
-  const socket = io();
+  <div class="input-container">
+    <input id="message" placeholder="Type a message..." />
+    <button onclick="sendMessage()">Send</button>
+  </div>
 
-  socket.on('connect', () => {
-    socket.emit('join', nickname);
-  });
+  <script>
+    let nickname = prompt("Enter your nickname:");
+    const socket = io();
 
-  socket.on('message', (msg) => {
-    const chat = document.getElementById('chat');
-    chat.innerHTML += `<p>${msg}</p>`;
-  });
+    socket.on('connect', () => {
+      socket.emit('join', nickname);
+    });
 
-  function sendMessage() {
-    const input = document.getElementById('message');
-    const msg = input.value;
-    socket.emit('chat_message', { nickname, msg });
-    input.value = '';
-  }
-</script>
+    socket.on('message', (msg) => {
+      const chat = document.getElementById('chat');
+      chat.innerHTML += `<p>${msg}</p>`;
+      chat.scrollTop = chat.scrollHeight;
+    });
 
+    function sendMessage() {
+      const input = document.getElementById('message');
+      const msg = input.value.trim();
+      if (msg !== "") {
+        socket.emit('chat_message', { nickname, msg });
+        input.value = '';
+      }
+    }
+  </script>
 </body>
 </html>
