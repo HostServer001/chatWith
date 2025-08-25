@@ -4,8 +4,8 @@
   <title>Chat App</title>
   <style>
   body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f6f8;
+    font-family: "Courier New", Courier, monospace;
+    background-color: black;
     margin: 0;
     padding: 0;
     display: flex;
@@ -83,24 +83,26 @@
   <input id="message" placeholder="Type a message..." />
   <button onclick="sendMessage()">Send</button>
 
-  <script>
-    const socket = io();
+<script>
+  let nickname = prompt("Enter your nickname:");
+  const socket = io();
 
-    socket.on('connect', () => {
-      console.log('Connected to server');
-    });
+  socket.on('connect', () => {
+    socket.emit('join', nickname);
+  });
 
-    socket.on('message', (msg) => {
-      const chat = document.getElementById('chat');
-      chat.innerHTML += `<p>${msg}</p>`;
-    });
+  socket.on('message', (msg) => {
+    const chat = document.getElementById('chat');
+    chat.innerHTML += `<p>${msg}</p>`;
+  });
 
-    function sendMessage() {
-      const input = document.getElementById('message');
-      const msg = input.value;
-      socket.send(msg);
-      input.value = '';
-    }
-  </script>
+  function sendMessage() {
+    const input = document.getElementById('message');
+    const msg = input.value;
+    socket.emit('chat_message', { nickname, msg });
+    input.value = '';
+  }
+</script>
+
 </body>
 </html>
