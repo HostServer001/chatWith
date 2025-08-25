@@ -15,7 +15,6 @@ def index():
 
 @socketio.on('message')
 def handle_message(msg):
-    logging.info(f"Message: {msg}")
     send(msg, broadcast=True)
 
 @socketio.on('join')
@@ -27,7 +26,9 @@ def handle_join(nickname):
 def handle_chat(data):
     nickname = data['nickname']
     msg = data['msg']
-    send(f"{nickname}: {msg}", broadcast=True)
+    output = f"{nickname}: {msg}"
+    send(output, broadcast=True)
+    logging.info(output)
 
 
 if __name__ == '__main__':
