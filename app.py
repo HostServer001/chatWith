@@ -1,5 +1,5 @@
 import logging
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 import os
 from datetime import datetime
@@ -26,9 +26,10 @@ def handle_message(msg):
 # Handle user joining
 @socketio.on('join')
 def handle_join(nickname):
-    logging.info(f"{nickname} joined the chat")
+    ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+    logging.info(f"User joined from IP: {ip}")
     
-    # Broadcast join message to everyone
+    # Broadcast join message to everyone (nickname only)
     join_msg = f"{nickname} has entered the chat"
     emit('message', join_msg, broadcast=True)
     
@@ -48,9 +49,10 @@ def handle_chat(data):
     nickname = data.get('nickname', 'Anonymous')
     msg = data.get('msg', '')
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    ip = request.headers.get('X-Forwarded-For', request.remote_addr)
     output = f"[{timestamp}] {nickname}: {msg}"
 
-    # Broadcast to all clients
+    # Broadcast to all clients (nickname only)
     emit('message', output, broadcast=True)
 
     # Append to chat.txt
@@ -58,8 +60,8 @@ def handle_chat(data):
     with open(file_path, "a", encoding="utf-8") as file:
         file.write(output + "\n")
 
-    # Log to console
-    logging.info(output)
+    # Log IP and message to console
+    logging.info(f"[{timestamp}] Message from IP {ip}: {msg}")
 
 # Run the app
 if __name__ == '__main__':
