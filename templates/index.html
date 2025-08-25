@@ -2,126 +2,101 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chat App - Solarized Dark</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chat App - Modern Aesthetic</title>
   <style>
-    /* Solarized Dark Palette */
-    :root {
-      --base03: #002b36;
-      --base02: #073642;
-      --base01: #586e75;
-      --base00: #657b83;
-      --base0:  #839496;
-      --base1:  #93a1a1;
-      --base2:  #eee8d5;
-      --base3:  #fdf6e3;
-      --yellow: #b58900;
-      --orange: #cb4b16;
-      --red:    #dc322f;
-      --magenta:#d33682;
-      --violet: #6c71c4;
-      --blue:   #268bd2;
-      --cyan:   #2aa198;
-      --green:  #859900;
-    }
-
+    /* Background Gradient */
     body {
-      font-family: 'Segoe UI', Roboto, sans-serif;
-      background-color: var(--base03);
       margin: 0;
       padding: 0;
+      font-family: 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #dfe9f3 0%, #ffffff 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
-      color: var(--base0);
+      padding: 20px;
     }
 
     h1 {
-      color: var(--cyan);
-      margin: 20px 0;
-      font-size: 1.8rem;
+      color: #333;
+      margin-bottom: 20px;
       text-align: center;
+      font-weight: 600;
     }
 
+    /* Chat Container - Glassmorphism Effect */
     #chat {
       width: 100%;
       max-width: 500px;
       height: 320px;
-      background-color: var(--base02);
-      border: 1px solid var(--base01);
-      border-radius: 12px;
-      padding: 12px;
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 16px;
+      padding: 15px;
       overflow-y: auto;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
       margin-bottom: 15px;
       scroll-behavior: smooth;
     }
 
     #chat p {
+      background: rgba(255,255,255,0.6);
+      padding: 10px 14px;
       margin: 8px 0;
-      padding: 8px 12px;
-      background-color: var(--base01);
-      color: var(--base2);
-      border-radius: 8px;
-      word-wrap: break-word;
+      border-radius: 10px;
+      color: #333;
       animation: fadeIn 0.3s ease;
     }
 
+    /* Input Section */
     .input-container {
       display: flex;
       width: 100%;
       max-width: 500px;
       gap: 10px;
-      padding: 0 5px;
     }
 
     #message {
       flex: 1;
       padding: 10px;
-      border: 1px solid var(--base01);
-      border-radius: 8px;
+      border-radius: 12px;
+      border: 1px solid #ccc;
       font-size: 14px;
-      background-color: var(--base02);
-      color: var(--base0);
-      transition: border-color 0.3s ease;
+      outline: none;
+      transition: border 0.3s ease, box-shadow 0.3s ease;
     }
 
     #message:focus {
-      outline: none;
-      border-color: var(--cyan);
+      border-color: #6a5acd;
+      box-shadow: 0 0 6px rgba(106,90,205,0.3);
     }
 
     button {
-      padding: 10px 16px;
-      background-color: var(--blue);
-      color: var(--base3);
+      background: linear-gradient(135deg, #6a5acd, #836fff);
       border: none;
-      border-radius: 8px;
-      font-size: 14px;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 12px;
       cursor: pointer;
-      transition: background-color 0.3s ease, transform 0.1s ease;
+      transition: transform 0.2s ease, background 0.3s ease;
+      font-size: 14px;
+      font-weight: 500;
     }
 
     button:hover {
-      background-color: var(--cyan);
+      background: linear-gradient(135deg, #7b68ee, #9370db);
+      transform: translateY(-1px);
     }
 
     button:active {
-      transform: scale(0.96);
+      transform: scale(0.97);
     }
 
     @media (max-width: 600px) {
-      #chat {
-        height: 250px;
-        padding: 10px;
-      }
-      #message {
-        font-size: 13px;
-      }
-      button {
-        font-size: 13px;
-      }
+      #chat { height: 250px; }
+      #message, button { font-size: 13px; }
     }
 
     @keyframes fadeIn {
@@ -133,9 +108,7 @@
 </head>
 <body>
   <h1>Welcome to the Chat App</h1>
-
   <div id="chat"></div>
-
   <div class="input-container">
     <input id="message" placeholder="Type a message..." />
     <button onclick="sendMessage()">Send</button>
@@ -158,7 +131,7 @@
     function sendMessage() {
       const input = document.getElementById('message');
       const msg = input.value.trim();
-      if (msg !== "") {
+      if (msg) {
         socket.emit('chat_message', { nickname, msg });
         input.value = '';
       }
