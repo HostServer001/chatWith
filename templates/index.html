@@ -3,34 +3,55 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Chat App - Modern Aesthetic</title>
+  <title>Chat App - Light/Dark Toggle</title>
   <style>
-    /* Background Gradient */
+    :root {
+      --bg-gradient: linear-gradient(135deg, #dfe9f3 0%, #ffffff 100%);
+      --chat-bg: rgba(255, 255, 255, 0.3);
+      --chat-text: #333;
+      --bubble-bg: rgba(255,255,255,0.6);
+      --input-bg: #fff;
+      --input-text: #000;
+      --button-bg: linear-gradient(135deg, #6a5acd, #836fff);
+      --button-text: #fff;
+    }
+
+    body.dark {
+      --bg-gradient: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+      --chat-bg: rgba(30, 30, 30, 0.6);
+      --chat-text: #e0e0e0;
+      --bubble-bg: rgba(60, 60, 60, 0.8);
+      --input-bg: #333;
+      --input-text: #fff;
+      --button-bg: linear-gradient(135deg, #ff7f50, #ff6347);
+      --button-text: #fff;
+    }
+
     body {
       margin: 0;
       padding: 0;
       font-family: 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #dfe9f3 0%, #ffffff 100%);
+      background: var(--bg-gradient);
       display: flex;
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
       padding: 20px;
+      color: var(--chat-text);
+      transition: background 0.5s ease;
     }
 
     h1 {
-      color: #333;
       margin-bottom: 20px;
       text-align: center;
       font-weight: 600;
     }
 
-    /* Chat Container - Glassmorphism Effect */
     #chat {
       width: 100%;
       max-width: 500px;
       height: 320px;
-      background: rgba(255, 255, 255, 0.3);
+      background: var(--chat-bg);
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.4);
       border-radius: 16px;
@@ -39,18 +60,19 @@
       box-shadow: 0 8px 20px rgba(0,0,0,0.1);
       margin-bottom: 15px;
       scroll-behavior: smooth;
+      transition: background 0.5s ease;
     }
 
     #chat p {
-      background: rgba(255,255,255,0.6);
+      background: var(--bubble-bg);
       padding: 10px 14px;
       margin: 8px 0;
       border-radius: 10px;
-      color: #333;
+      color: var(--chat-text);
       animation: fadeIn 0.3s ease;
+      transition: background 0.5s ease, color 0.5s ease;
     }
 
-    /* Input Section */
     .input-container {
       display: flex;
       width: 100%;
@@ -64,8 +86,10 @@
       border-radius: 12px;
       border: 1px solid #ccc;
       font-size: 14px;
+      background-color: var(--input-bg);
+      color: var(--input-text);
       outline: none;
-      transition: border 0.3s ease, box-shadow 0.3s ease;
+      transition: border 0.3s ease, box-shadow 0.3s ease, background 0.5s ease, color 0.5s ease;
     }
 
     #message:focus {
@@ -74,9 +98,9 @@
     }
 
     button {
-      background: linear-gradient(135deg, #6a5acd, #836fff);
+      background: var(--button-bg);
       border: none;
-      color: white;
+      color: var(--button-text);
       padding: 10px 18px;
       border-radius: 12px;
       cursor: pointer;
@@ -86,12 +110,20 @@
     }
 
     button:hover {
-      background: linear-gradient(135deg, #7b68ee, #9370db);
       transform: translateY(-1px);
     }
 
     button:active {
       transform: scale(0.97);
+    }
+
+    .theme-toggle {
+      margin-bottom: 10px;
+      background: var(--button-bg);
+      color: var(--button-text);
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 12px;
     }
 
     @media (max-width: 600px) {
@@ -108,7 +140,11 @@
 </head>
 <body>
   <h1>Welcome to the Chat App</h1>
+
+  <button class="theme-toggle" onclick="toggleTheme()">🌞 / 🌙 Toggle Theme</button>
+
   <div id="chat"></div>
+
   <div class="input-container">
     <input id="message" placeholder="Type a message..." />
     <button onclick="sendMessage()">Send</button>
@@ -135,6 +171,10 @@
         socket.emit('chat_message', { nickname, msg });
         input.value = '';
       }
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('dark');
     }
   </script>
 </body>
