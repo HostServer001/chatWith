@@ -16,6 +16,18 @@ def handle_message(msg):
     print(f"Message: {msg}")
     send(msg, broadcast=True)
 
+@socketio.on('join')
+def handle_join(nickname):
+    print(f"{nickname} joined the chat")
+    send(f"{nickname} has entered the chat", broadcast=True)
+
+@socketio.on('chat_message')
+def handle_chat(data):
+    nickname = data['nickname']
+    msg = data['msg']
+    send(f"{nickname}: {msg}", broadcast=True)
+
+
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 10000))
     socketio.run(app, host='0.0.0.0', port=port)
