@@ -61,7 +61,7 @@ def handle_chat(data):
         file.write(output + "\n")
 
     # Log IP and message to console
-    logging.info(f"[{timestamp}] Message from IP {ip}: {msg}")
+    logging.info(f"[{timestamp}] Msg {nickname} from IP {ip}: {msg}")
 
 # Run the app
 if __name__ == '__main__':
