@@ -1,9 +1,11 @@
+import logging
 from flask import Flask, render_template
 from flask_socketio import SocketIO, send
 import os
 import eventlet
 eventlet.monkey_patch()
 
+logging.basicConfig(level=logging.INFO)
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
@@ -13,12 +15,12 @@ def index():
 
 @socketio.on('message')
 def handle_message(msg):
-    print(f"Message: {msg}")
+    logging.info(f"Message: {msg}")
     send(msg, broadcast=True)
 
 @socketio.on('join')
 def handle_join(nickname):
-    print(f"{nickname} joined the chat")
+    logging.info(f"{nickname} joined the chat")
     send(f"{nickname} has entered the chat", broadcast=True)
 
 @socketio.on('chat_message')
