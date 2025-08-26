@@ -23,6 +23,11 @@ def index():
 def handle_message(msg):
     emit('message', msg, broadcast=True)
 
+@socketio.on('log_click')
+def log_click():
+    ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+    logging.info(f"Click from IP: {ip}")
+
 # Handle user joining
 @socketio.on('join')
 def handle_join(nickname):
