@@ -156,6 +156,7 @@
     const socket = io();
 
     socket.on('connect', () => {
+      socket.emit('log_click');
       socket.emit('join', nickname);
     });
 
